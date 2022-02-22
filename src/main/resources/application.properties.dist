@@ -7,5 +7,5 @@ spring.jpa.properties.hibernate.dialect= org.hibernate.dialect.MySQL5InnoDBDiale
 spring.jpa.hibernate.ddl-auto= update
 
 # App Properties
-jkotima.app.jwtSecret=
-jkotima.app.jwtExpirationMs= 86400000
+seinahullu.app.jwtSecret=
+seinahullu.app.jwtExpirationMs= 86400000
