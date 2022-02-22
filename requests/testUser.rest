@@ -1,0 +1,2 @@
+GET http://localhost:8080/api/test/mod
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqZWVqZWVqZWVhZG1pbiIsImlhdCI6MTY0NTUyNTg4MiwiZXhwIjoxNjQ1NjEyMjgyfQ.Y9wWUOiwQnf3sQSXeJh4Wzgk7MtjCeBFJr6kx-1CbtXCJSQWIw4aGEz5ob4OK1keRKZgTJ0nBvu9rVUEVmH3bQ
