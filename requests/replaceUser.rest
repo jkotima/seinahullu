@@ -1,0 +1,10 @@
+PUT http://localhost:8080/api/users/8
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJicmF1bmFyaSIsImlhdCI6MTY0NTU0MDc0MywiZXhwIjoxNjQ1NjI3MTQzfQ.aEETyLkRT_nnFHTTxyn0ekbMrnVGYV90F2Bf7odcFOg7Rel_ojACO3-ED2yuTCflPd99MgAKFeJGVlJZpMgwkw
+
+{
+  "username": "braunari",
+  "password": "asdasdasd",
+  "email": "asda@adminassdans.com",
+  "roles": ["admin"]
+}
