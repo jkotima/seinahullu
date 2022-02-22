@@ -1,0 +1,7 @@
+POST http://localhost:8080/api/posts
+Content-Type: application/json
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJicmF1bmFyaTIiLCJpYXQiOjE2NDU1NDYxNzQsImV4cCI6MTY0NTYzMjU3NH0.yF9HUN1QL4XZXHPVOLtNU2RPvn_r3sdBKCn21e8d2fb-5AsjplXjI3BM-743l_1BiaZGbLXS1lUebneSTfiykw
+
+{
+  "content": "Hello world!"
+}
