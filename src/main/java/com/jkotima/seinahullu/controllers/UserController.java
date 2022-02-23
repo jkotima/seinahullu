@@ -1,6 +1,7 @@
 package com.jkotima.seinahullu.controllers;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -15,9 +17,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
 import com.jkotima.seinahullu.payload.request.ReplaceUserRequest;
 import com.jkotima.seinahullu.payload.response.MessageResponse;
+import com.jkotima.seinahullu.repository.PostRepository;
 import com.jkotima.seinahullu.repository.RoleRepository;
 import com.jkotima.seinahullu.repository.UserRepository;
 import com.jkotima.seinahullu.models.ERole;
+import com.jkotima.seinahullu.models.Post;
 import com.jkotima.seinahullu.models.Role;
 import com.jkotima.seinahullu.models.User;
 
@@ -30,6 +34,9 @@ public class UserController {
 
   @Autowired
   RoleRepository roleRepository;
+
+  @Autowired
+  PostRepository postRepository;
 
   @Autowired
   PasswordEncoder encoder;
@@ -70,5 +77,15 @@ public class UserController {
     }
 
     return ResponseEntity.ok(new MessageResponse("User updated successfully!"));
+  }
+
+  @GetMapping("/{id}/posts")
+  public List<Post> postsByUser(@PathVariable long id) {
+    User user = userRepository
+        .findById(id)
+        .orElseThrow(() -> new RuntimeException("Error: no such a user ID"));
+    System.out.println(postRepository.findByUser(user).get().toString());
+    
+    return postRepository.findByUser(user).get();
   }
 }
