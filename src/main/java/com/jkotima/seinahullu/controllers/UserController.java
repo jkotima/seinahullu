@@ -75,7 +75,8 @@ public class UserController {
 
       user.setRoles(roles);
     }
-
+    
+    userRepository.save(user);
     return ResponseEntity.ok(new MessageResponse("User updated successfully!"));
   }
 
