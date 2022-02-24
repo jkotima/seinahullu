@@ -96,13 +96,23 @@ public class UserController {
   @Transactional
   @PostMapping("/{id}/follow")
   public ResponseEntity<?> followUser(Authentication authentication, @PathVariable Long id) {
-
     User userToFollow = userRepository.findById(id).get();
     User currentUser = userRepository
         .findByUsername(authentication.getName()).get();
 
     currentUser.getFollows().add(userToFollow);
     return ResponseEntity.ok(new MessageResponse("Started following succesfully"));
+  }
+
+  @Transactional
+  @PostMapping("/{id}/unfollow")
+  public ResponseEntity<?> unfollowUser(Authentication authentication, @PathVariable Long id) {
+    User userToUnfollow = userRepository.findById(id).get();
+    User currentUser = userRepository
+        .findByUsername(authentication.getName()).get();
+
+    currentUser.getFollows().remove(userToUnfollow);
+    return ResponseEntity.ok(new MessageResponse("Unfollowed succesfully"));
   }
 
 }
