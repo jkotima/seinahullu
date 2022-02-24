@@ -83,12 +83,14 @@ public class UserController {
     return ResponseEntity.ok(new MessageResponse("User updated successfully!"));
   }
 
+  @GetMapping("/{id}")
+  public User getUser(@PathVariable long id) {
+    return userRepository.findById(id).get();
+  }
+
   @GetMapping("/{id}/posts")
   public List<Post> postsByUser(@PathVariable long id) {
-    User user = userRepository
-        .findById(id)
-        .orElseThrow(() -> new RuntimeException("Error: no such a user ID"));
-    System.out.println(postRepository.findByUser(user).get().toString());
+    User user = userRepository.findById(id).get();
 
     return postRepository.findByUser(user).get();
   }
