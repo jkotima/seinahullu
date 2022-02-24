@@ -1,6 +1,7 @@
 package com.jkotima.seinahullu.models;
 
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
@@ -40,6 +41,9 @@ public class User {
       joinColumns = @JoinColumn(name = "user_id"),
       inverseJoinColumns = @JoinColumn(name = "role_id"))
   private Set<Role> roles = new HashSet<>();
+
+  @ManyToMany
+  private List<User> follows;
 
   public User() {}
 

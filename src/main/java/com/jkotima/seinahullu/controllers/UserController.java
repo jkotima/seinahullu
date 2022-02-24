@@ -7,14 +7,17 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.transaction.annotation.Transactional;
 import com.jkotima.seinahullu.payload.request.ReplaceUserRequest;
 import com.jkotima.seinahullu.payload.response.MessageResponse;
 import com.jkotima.seinahullu.repository.PostRepository;
@@ -75,7 +78,7 @@ public class UserController {
 
       user.setRoles(roles);
     }
-    
+
     userRepository.save(user);
     return ResponseEntity.ok(new MessageResponse("User updated successfully!"));
   }
@@ -86,7 +89,20 @@ public class UserController {
         .findById(id)
         .orElseThrow(() -> new RuntimeException("Error: no such a user ID"));
     System.out.println(postRepository.findByUser(user).get().toString());
-    
+
     return postRepository.findByUser(user).get();
   }
+
+  @Transactional
+  @PostMapping("/{id}/follow")
+  public ResponseEntity<?> followUser(Authentication authentication, @PathVariable Long id) {
+
+    User userToFollow = userRepository.findById(id).get();
+    User currentUser = userRepository
+        .findByUsername(authentication.getName()).get();
+
+    currentUser.getFollows().add(userToFollow);
+    return ResponseEntity.ok(new MessageResponse("Started following succesfully"));
+  }
+
 }
