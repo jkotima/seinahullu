@@ -9,6 +9,7 @@ import javax.persistence.*;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.Size;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 @Getter
 @Setter
@@ -32,6 +33,7 @@ public class User {
   @Email
   private String email;
 
+  @JsonIgnore
   @NotBlank
   @Size(max = 120)
   private String password;
@@ -42,6 +44,7 @@ public class User {
       inverseJoinColumns = @JoinColumn(name = "role_id"))
   private Set<Role> roles = new HashSet<>();
 
+  @JsonIgnore
   @ManyToMany
   private List<User> follows;
 

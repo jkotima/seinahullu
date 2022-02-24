@@ -115,4 +115,11 @@ public class UserController {
     return ResponseEntity.ok(new MessageResponse("Unfollowed succesfully"));
   }
 
+  @GetMapping("/{id}/follows")
+  public List<User> followsByUser(@PathVariable long id) {
+    User user = userRepository.findById(id).get();
+    
+    return user.getFollows();
+  }
+
 }

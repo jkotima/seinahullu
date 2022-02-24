@@ -1,0 +1,2 @@
+GET http://localhost:8080/api/users/9/follows/
+Authorization: Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJ0b2ltaSIsImlhdCI6MTY0NTY5NjQ3OSwiZXhwIjoxNjQ1NzgyODc5fQ.-K5MJ2jFfuxZRqbRi8vLnvDklE6TTeJSTQAPB9TfHOcRBrN9sDdqkeggpgc2hoO5IOF44GEeK7BbRzM8pKzgAA
