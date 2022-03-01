@@ -5,7 +5,13 @@ spring.datasource.password=
 # For MySQL
 spring.jpa.properties.hibernate.dialect= org.hibernate.dialect.MySQL5InnoDBDialect
 spring.jpa.hibernate.ddl-auto= update
+spring.datasource.initialization-mode=always
+spring.jpa.defer-datasource-initialization=true
 
 # App Properties
 seinahullu.app.jwtSecret=
 seinahullu.app.jwtExpirationMs= 86400000
+
+# Log sql statements and their parameters
+logging.level.org.hibernate.SQL=debug
+logging.level.org.hibernate.type.descriptor.sql=trace
