@@ -6,12 +6,10 @@ import javax.validation.Valid;
 import com.jkotima.seinahullu.models.Post;
 import com.jkotima.seinahullu.models.User;
 import com.jkotima.seinahullu.payload.request.PostRequest;
-import com.jkotima.seinahullu.payload.response.MessageResponse;
 import com.jkotima.seinahullu.repository.PostRepository;
 import com.jkotima.seinahullu.repository.UserRepository;
 import com.jkotima.seinahullu.security.services.UserDetailsImpl;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -33,7 +31,7 @@ public class PostController {
   UserRepository userRepository;
 
   @PostMapping("/")
-  ResponseEntity<?> createPost(@Valid @RequestBody PostRequest req) {
+  Post createPost(@Valid @RequestBody PostRequest req) {
     UserDetailsImpl contextUser =
         (UserDetailsImpl) SecurityContextHolder
             .getContext()
@@ -46,8 +44,7 @@ public class PostController {
             req.getContent(),
             userRepository.findById(contextUser.getId()).get());
 
-    postRepository.save(post);
-    return ResponseEntity.ok(new MessageResponse("Posted successfully!"));
+    return postRepository.save(post);
   }
 
   @GetMapping("/")
