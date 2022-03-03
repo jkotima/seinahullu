@@ -48,6 +48,12 @@ public class User {
   @ManyToMany
   private List<User> follows;
 
+  @OneToMany(
+      mappedBy = "user",
+      cascade = CascadeType.ALL,
+      orphanRemoval = true)
+  private List<Post> posts;
+
   public User() {}
 
   public User(String username, String email, String password) {
