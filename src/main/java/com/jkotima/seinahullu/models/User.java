@@ -47,7 +47,8 @@ public class User {
   @JsonIgnore
   @ManyToMany
   private List<User> follows;
-
+  
+  @JsonIgnore
   @OneToMany(
       mappedBy = "user",
       cascade = CascadeType.ALL,
