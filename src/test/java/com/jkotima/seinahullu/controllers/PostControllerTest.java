@@ -9,9 +9,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
+import org.springframework.util.Assert;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import java.util.Date;
 import com.jayway.jsonpath.JsonPath;
 import com.jkotima.seinahullu.models.ERole;
+import com.jkotima.seinahullu.models.Post;
 import com.jkotima.seinahullu.models.User;
 import com.jkotima.seinahullu.repository.PostRepository;
 import com.jkotima.seinahullu.repository.RoleRepository;
@@ -77,6 +80,71 @@ public class PostControllerTest {
     mockMvc.perform(get("/api/posts/" + postId).header("Authorization", auth))
         .andExpect(status().isOk())
         .andExpect(jsonPath("$.content").value("test post"));
+  }
+
+  @Test
+  public void postsOfFollowedUsers() throws Exception {
+    // create users to follow
+    String encodedPw = encoder.encode("password123!");
+
+    User posterUser1 = new User("posterUser1", "posterUser1@test.com", encodedPw);
+    posterUser1.getRoles().add(roleRepository.findByName(ERole.ROLE_USER).get());
+    User posterUser2 = new User("posterUser2", "posterUser2@test.com", encodedPw);
+    posterUser2.getRoles().add(roleRepository.findByName(ERole.ROLE_USER).get());
+
+    userRepository.save(posterUser1);
+    userRepository.save(posterUser2);
+
+    // create posts for those users
+    Post post1 =
+        new Post(
+            new Date(),
+            "test post 1",
+            userRepository.findById(posterUser1.getId()).get());
+
+    Post post2 =
+        new Post(
+            new Date(),
+            "test post 2",
+            userRepository.findById(posterUser2.getId()).get());
+
+    postRepository.save(post1);
+    postRepository.save(post2);
+
+    // follow those users
+    String auth = "Bearer " + accessTokenFor("normalUser", "password123!");
+
+    mockMvc.perform(post("/api/users/" + posterUser1.getId() + "/follow")
+        .header("Authorization", auth))
+        .andExpect(status().isOk());
+
+    mockMvc.perform(post("/api/users/" + posterUser2.getId() + "/follow")
+        .header("Authorization", auth))
+        .andExpect(status().isOk());
+
+    // posts of followed users returned correctly
+    MvcResult res = mockMvc.perform(get("/api/posts/").header("Authorization", auth))
+        .andExpect(status().isOk())
+        .andReturn();
+
+    String content = res.getResponse().getContentAsString();
+    Assert.isTrue(content.contains("test post 1"),
+        "Response content has to include 'test post 1'");
+    Assert.isTrue(content.contains("test post 2"),
+        "Response content has to include 'test post 2'");
+
+    // unfollow
+    mockMvc.perform(post("/api/users/" + posterUser1.getId() + "/unfollow")
+        .header("Authorization", auth))
+        .andExpect(status().isOk());
+
+    res = mockMvc.perform(get("/api/posts/").header("Authorization", auth))
+        .andExpect(status().isOk())
+        .andReturn();
+    content = res.getResponse().getContentAsString();
+    Assert.isTrue(!content.contains("test post 1"),
+        "Response content should not include 'test post 1'");
+
   }
 }
 
