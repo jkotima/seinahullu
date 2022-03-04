@@ -10,21 +10,17 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.MvcResult;
 import org.springframework.util.Assert;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 import com.jayway.jsonpath.JsonPath;
 import com.jkotima.seinahullu.models.ERole;
 import com.jkotima.seinahullu.models.User;
 import com.jkotima.seinahullu.repository.RoleRepository;
 import com.jkotima.seinahullu.repository.UserRepository;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-
 
 @ActiveProfiles("test")
 @SpringBootTest
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
 @AutoConfigureMockMvc
 public class UserControllerTest {
   @Autowired
@@ -39,8 +35,8 @@ public class UserControllerTest {
   @Autowired
   PasswordEncoder encoder;
 
-  @BeforeAll
-  public void setup() {
+  @BeforeEach
+  public void init() {
     userRepository.deleteAll();
     String encodedPw = encoder.encode("password123!");
 
@@ -78,9 +74,32 @@ public class UserControllerTest {
             "newpassword123!",
             "newemail@email.com")))
         .andExpect(status().isOk());
-   
+
     Assert.isTrue(userRepository.existsByUsername("newusername"), "username exists in db");
     Assert.isTrue(userRepository.existsByEmail("newemail@email.com"), "email exists in db");
     accessTokenFor("newusername", "newpassword123!");
   }
+  
+  @Test
+  public void adminCanReplaceOtherUsersData() throws Exception {
+    String auth = "Bearer " + accessTokenFor("adminUser", "password123!");
+    Long normalUserId = userRepository.findByUsername("normalUser").get().getId();
+
+    mockMvc.perform(put("/api/users/" + normalUserId)
+        .header("Authorization", auth)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(String.format(
+            "{\"username\":\"%s\",\"password\":\"%s\",\"email\":\"%s\"}",
+            "newusernamefromadmin",
+            "newpasswordfromadmin123!",
+            "newemailfromadmin@email.com")))
+        .andExpect(status().isOk());
+
+    Assert.isTrue(userRepository.existsByUsername("newusernamefromadmin"),
+        "username exists in db");
+    Assert.isTrue(userRepository.existsByEmail("newemailfromadmin@email.com"),
+        "email exists in db");
+    accessTokenFor("newusernamefromadmin", "newpasswordfromadmin123!");
+  }
+  
 }
