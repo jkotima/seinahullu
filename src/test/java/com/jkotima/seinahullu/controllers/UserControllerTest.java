@@ -79,7 +79,7 @@ public class UserControllerTest {
     Assert.isTrue(userRepository.existsByEmail("newemail@email.com"), "email exists in db");
     accessTokenFor("newusername", "newpassword123!");
   }
-  
+
   @Test
   public void adminCanReplaceOtherUsersData() throws Exception {
     String auth = "Bearer " + accessTokenFor("adminUser", "password123!");
@@ -101,5 +101,21 @@ public class UserControllerTest {
         "email exists in db");
     accessTokenFor("newusernamefromadmin", "newpasswordfromadmin123!");
   }
-  
+
+  @Test
+  public void normalUserCantReplaceOtherUsersData() throws Exception {
+    String auth = "Bearer " + accessTokenFor("normalUser", "password123!");
+    Long otherUserId = userRepository.findByUsername("adminUser").get().getId();
+
+    mockMvc.perform(put("/api/users/" + otherUserId)
+        .header("Authorization", auth)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(String.format(
+            "{\"username\":\"%s\",\"password\":\"%s\",\"email\":\"%s\"}",
+            "newusername",
+            "newpassword123!",
+            "newemail@email.com")))
+        .andExpect(status().is4xxClientError());
+  }
+
 }
