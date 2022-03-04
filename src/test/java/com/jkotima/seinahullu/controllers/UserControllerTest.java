@@ -58,7 +58,10 @@ public class UserControllerTest {
     MvcResult res = mockMvc.perform(post("/api/auth/signin")
         .contentType(MediaType.APPLICATION_JSON)
         .content(String.format("{\"username\":\"%s\",\"password\":\"%s\"}", username, password)))
+<<<<<<< HEAD
         .andExpect(status().isOk())
+=======
+>>>>>>> 15faba8891e824c1982019409460aa94389da63b
         .andReturn();
 
     return JsonPath.read(res.getResponse().getContentAsString(), "$.accessToken");
