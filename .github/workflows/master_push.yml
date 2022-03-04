@@ -1,0 +1,35 @@
+name: Master Push
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0.28
+        env:
+          MYSQL_DATABASE: seinahullu-test
+          MYSQL_USER: testi
+          MYSQL_PASSWORD: testi
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+    
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up JDK 11
+      uses: actions/setup-java@v2
+      with:
+        java-version: '11'
+        distribution: 'temurin'
+        cache: maven
+  
+    - name: Build with Maven
+      run: mvn -B package --file pom.xml
+  
+    - name: Test with Maven
+      run: mvn -B test --file pom.xml
