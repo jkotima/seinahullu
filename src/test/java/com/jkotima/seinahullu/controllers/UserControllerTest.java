@@ -101,7 +101,7 @@ public class UserControllerTest {
         "email exists in db");
     accessTokenFor("newusernamefromadmin", "newpasswordfromadmin123!");
   }
-
+  
   @Test
   public void normalUserCantReplaceOtherUsersData() throws Exception {
     String auth = "Bearer " + accessTokenFor("normalUser", "password123!");
@@ -117,5 +117,36 @@ public class UserControllerTest {
             "newemail@email.com")))
         .andExpect(status().is4xxClientError());
   }
+  
+  @Test
+  public void adminCanChangeRoles() throws Exception {
+    String auth = "Bearer " + accessTokenFor("adminUser", "password123!");
+    Long otherUserId = userRepository.findByUsername("normalUser").get().getId();
 
+    mockMvc.perform(put("/api/users/" + otherUserId)
+        .header("Authorization", auth)
+        .contentType(MediaType.APPLICATION_JSON)
+        .content(String.format(
+            "{\"username\":\"%s\",\"password\":\"%s\",\"email\":\"%s\",\"roles\":%s}",
+            "newusernamefromadmin",
+            "newpasswordfromadmin123!",
+            "newemailfromadmin@email.com",
+            "[\"admin\"]")))
+        .andExpect(status().isOk());
+
+    Assert.isTrue(
+        userRepository
+            .findById(otherUserId)
+            .get()
+            .getRoles()
+            .stream()
+            .anyMatch(r -> r.getName().equals(ERole.ROLE_ADMIN)),
+        "User has a role admin");
+  }
+  
+  @Test
+  public void normalUserCantChangeRoles() throws Exception {}
+
+  @Test
+  public void moderatorUserCantChangeRoles() throws Exception {}
 }
