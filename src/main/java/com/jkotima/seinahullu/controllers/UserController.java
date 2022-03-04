@@ -48,7 +48,8 @@ public class UserController {
   @PreAuthorize("#id == authentication.principal.id or hasRole('ADMIN')")
   public ResponseEntity<?> replaceUser(
       @Valid @RequestBody ReplaceUserRequest req,
-      @PathVariable Long id) {
+      @PathVariable Long id,
+      Authentication authentication) {
 
     User user = userRepository
         .findById(id)
@@ -58,7 +59,12 @@ public class UserController {
     user.setPassword(encoder.encode(req.getPassword()));
     user.setEmail(req.getEmail());
 
-    if (req.getRoles() != null) {
+    boolean currentUserIsAdmin = authentication
+        .getAuthorities()
+        .stream()
+        .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+
+    if (req.getRoles() != null && currentUserIsAdmin) {
       Set<Role> roles = new HashSet<>();
       req.getRoles().forEach(role -> {
         switch (role) {
@@ -120,7 +126,7 @@ public class UserController {
   @GetMapping("/{id}/follows")
   public List<User> followsByUser(@PathVariable long id) {
     User user = userRepository.findById(id).get();
-    
+
     return user.getFollows();
   }
 
