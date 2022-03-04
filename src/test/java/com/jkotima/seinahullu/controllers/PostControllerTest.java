@@ -19,7 +19,7 @@ import com.jkotima.seinahullu.models.User;
 import com.jkotima.seinahullu.repository.PostRepository;
 import com.jkotima.seinahullu.repository.RoleRepository;
 import com.jkotima.seinahullu.repository.UserRepository;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -44,8 +44,8 @@ public class PostControllerTest {
   @Autowired
   PasswordEncoder encoder;
 
-  @BeforeAll
-  public void setup() {
+  @BeforeEach
+  public void init() {
     userRepository.deleteAll();
 
     String encodedPw = encoder.encode("password123!");

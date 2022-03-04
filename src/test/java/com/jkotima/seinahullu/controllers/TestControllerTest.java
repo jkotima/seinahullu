@@ -16,7 +16,7 @@ import com.jkotima.seinahullu.models.ERole;
 import com.jkotima.seinahullu.models.User;
 import com.jkotima.seinahullu.repository.RoleRepository;
 import com.jkotima.seinahullu.repository.UserRepository;
-import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 
@@ -37,8 +37,8 @@ public class TestControllerTest {
   @Autowired
   PasswordEncoder encoder;
 
-  @BeforeAll
-  public void setup() {
+  @BeforeEach
+  public void init() {
     userRepository.deleteAll();
     String encodedPw = encoder.encode("password123!");
 
